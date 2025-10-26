@@ -17,6 +17,8 @@ struct OverlayView: View {
     @AppStorage("strengthMult") var strengthMult = 100.0
     @AppStorage("effectColor")  var colorHex = 0xff0000
 
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+
     let update =
         Timer.publish(every: 60, on: .main, in: .common).autoconnect()
 
@@ -42,7 +44,7 @@ struct OverlayView: View {
             Rectangle()
                 .colorEffect(ShaderLibrary.frag(
                     .float2(self.width, self.height),
-                    .float(enableAnim ? self.clock.timeIntervalSinceNow : 0.0),
+                    .float(enableAnim && !reduceMotion ? self.clock.timeIntervalSinceNow : 0.0),
                     .float(strength * self.strengthMult / 100.0),
                     .float(self.enablePulse ? 1.0 : 0.0),
                     .color(color)
