@@ -39,32 +39,43 @@ struct SettingsView: View {
                     }
                     .padding(.bottom, 8)
 
-                    ColorPicker(
-                        "Color:",
-                        selection: Binding(
-                            get: { self.color },
-                            set: { val in
-                                var r: CGFloat = 0
-                                var g: CGFloat = 0
-                                var b: CGFloat = 0
-                                var a: CGFloat = 0
+                    LabeledContent("Color:") {
+                        HStack {
+                            ColorPicker(
+                                "",
+                                selection: Binding(
+                                    get: { self.color },
+                                    set: { val in
+                                        var r: CGFloat = 0
+                                        var g: CGFloat = 0
+                                        var b: CGFloat = 0
+                                        var a: CGFloat = 0
 
-                                NSColor(val).getRed(&r, green: &g, blue: &b, alpha: &a)
+                                        NSColor(val).getRed(&r, green: &g, blue: &b, alpha: &a)
 
-                                self.color = val
-                                self.colorHex =
-                                    (Int(r * 255) << 16) |
-                                    (Int(g * 255) << 8) |
-                                    (Int(b * 255))
+                                        self.color = val
+                                        self.colorHex =
+                                            (Int(r * 255) << 16) |
+                                            (Int(g * 255) << 8) |
+                                            (Int(b * 255))
+                                    }
+                                ),
+                                supportsOpacity: false
+                            )
+                            .labelsHidden()
+                            .onAppear {
+                                let r = Double((self.colorHex >> 16) & 0xff) / 255
+                                let g = Double((self.colorHex >> 8) & 0xff) / 255
+                                let b = Double(self.colorHex & 0xff) / 255
+
+                                self.color = Color(red: r, green: g, blue: b)
                             }
-                        ),
-                        supportsOpacity: false
-                    ).onAppear {
-                        let r = Double((self.colorHex >> 16) & 0xff) / 255
-                        let g = Double((self.colorHex >> 8) & 0xff) / 255
-                        let b = Double(self.colorHex & 0xff) / 255
 
-                        self.color = Color(red: r, green: g, blue: b)
+                            Button("Reset", action: {
+                                self.colorHex = 0xff0000
+                                self.color = Color(red: 1.0, green: 0.0, blue: 0.0)
+                            })
+                        }
                     }
                 }
             }
