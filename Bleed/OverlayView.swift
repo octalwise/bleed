@@ -19,9 +19,6 @@ struct OverlayView: View {
 
     @Environment(\.accessibilityReduceMotion) var reduceMotion
 
-    let update =
-        Timer.publish(every: 60, on: .main, in: .common).autoconnect()
-
     let clock = Date()
 
     var body: some View {
