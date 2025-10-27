@@ -38,11 +38,11 @@ final class BatteryMonitor: ObservableObject {
         let snapshot = IOPSCopyPowerSourcesInfo().takeRetainedValue()
         let sources = IOPSCopyPowerSourcesList(snapshot).takeRetainedValue() as Array
 
-        guard let source = sources.first else {
-            return
-        }
+        guard let source = sources.first else { return }
 
-        let info = IOPSGetPowerSourceDescription(snapshot, source).takeUnretainedValue() as! [String: AnyObject]
+        let info =
+            IOPSGetPowerSourceDescription(snapshot, source)
+                .takeUnretainedValue() as! [String: AnyObject]
 
         let capacity = info[kIOPSCurrentCapacityKey] as! Double
         let max = info[kIOPSMaxCapacityKey] as! Double
