@@ -32,5 +32,5 @@ using namespace metal;
     a *= strength;
   }
 
-  return color * half4(a, a, a, a);
+  return color * half4(a);
 }
