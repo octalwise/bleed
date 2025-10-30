@@ -1,5 +1,10 @@
 {
-  "fill" : "system-dark",
+  "fill" : {
+    "linear-gradient" : [
+      "display-p3:0.19320,0.13635,0.13730,1.00000",
+      "display-p3:0.09365,0.06335,0.06385,1.00000"
+    ]
+  },
   "groups" : [
     {
       "layers" : [
@@ -7,7 +12,7 @@
           "fill-specializations" : [
             {
               "value" : {
-                "automatic-gradient" : "srgb:1.00000,0.00000,0.15753,1.00000"
+                "automatic-gradient" : "srgb:1.00000,0.00000,0.15686,1.00000"
               }
             },
             {
