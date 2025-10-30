@@ -22,28 +22,28 @@ struct OverlayView: View {
     var body: some View {
         TimelineView(.animation) { context in
             let displayed = testingMode ? 0.01 : battery.getDisplayed()
-
             let start = startPercent / 100.0
 
-            let strength =
-                displayed <= start
-                    ? 1.0 - ((displayed - 0.01) / start)
-                    : 0.0
+            if displayed <= start {
+                let strength = 1.0 - ((displayed - 0.01) / start)
 
-            let r = Double((self.colorHex >> 16) & 0xff) / 255
-            let g = Double((self.colorHex >> 8) & 0xff) / 255
-            let b = Double(self.colorHex & 0xff) / 255
+                let r = Double((self.colorHex >> 16) & 0xff) / 255.0
+                let g = Double((self.colorHex >> 8) & 0xff) / 255.0
+                let b = Double(self.colorHex & 0xff) / 255.0
 
-            let color = Color(red: r, green: g, blue: b)
+                let color = Color(red: r, green: g, blue: b)
 
-            Rectangle()
-                .colorEffect(ShaderLibrary.frag(
-                    .float2(self.width, self.height),
-                    .float(enableAnim && !reduceMotion ? self.clock.timeIntervalSinceNow : 0.0),
-                    .float(strength * self.strengthMult / 100.0),
-                    .float(self.enablePulse ? 1.0 : 0.0),
-                    .color(color)
-                ))
+                Rectangle()
+                    .colorEffect(ShaderLibrary.frag(
+                        .float2(self.width, self.height),
+                        .float(enableAnim && !reduceMotion ? self.clock.timeIntervalSinceNow : 0.0),
+                        .float(strength * self.strengthMult / 100.0),
+                        .float(self.enablePulse ? 1.0 : 0.0),
+                        .color(color)
+                    ))
+            } else {
+                Color.clear
+            }
         }
         .onChange(of: chargingHide) {
             battery.update()
