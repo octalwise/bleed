@@ -1,5 +1,5 @@
-import IOKit.ps
 import SwiftUI
+import IOKit.ps
 
 final class BatteryMonitor: ObservableObject {
     var percentage = 1.0

@@ -1,7 +1,5 @@
 import SwiftUI
-
 import Foundation
-import IOKit.ps
 
 struct OverlayView: View {
     let width: Double
