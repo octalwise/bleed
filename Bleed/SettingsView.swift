@@ -19,6 +19,7 @@ struct SettingsView: View {
                 Text("General:")
                     .font(.headline)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.bottom, 4)
 
                 Form {
                     LabeledContent("Conditions:") {
