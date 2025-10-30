@@ -4,8 +4,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
     var status: NSStatusItem!
 
+    @AppStorage("launchSettings") var launchSettings = true
+
+    @Environment(\.openSettings) var openSettings
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         self.createWindow()
+
+        if self.launchSettings {
+            self.openSettings()
+            self.launchSettings = false
+        }
     }
 
     func createWindow() {
