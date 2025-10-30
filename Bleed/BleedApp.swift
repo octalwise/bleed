@@ -2,41 +2,35 @@ import SwiftUI
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
-    @Environment(\.openSettings) var openSettings
+    var status: NSStatusItem!
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        self.createWindow()
+    }
+
+    func createWindow() {
         let frame = NSScreen.main!.frame
 
-        window = NSWindow(
+        self.window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: frame.width, height: frame.height),
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
         )
 
-        window.isOpaque = false
-        window.backgroundColor = .clear
-        window.ignoresMouseEvents = true
+        self.window.isOpaque = false
+        self.window.backgroundColor = .clear
+        self.window.ignoresMouseEvents = true
 
-        window.level = .statusBar
-        window.orderFrontRegardless()
-        window.collectionBehavior = [.canJoinAllSpaces]
+        self.window.level = .statusBar
+        self.window.orderFrontRegardless()
+        self.window.collectionBehavior = [.canJoinAllSpaces]
 
         let contentView = OverlayView(
             width: Double(frame.width),
             height: Double(frame.height)
         )
-        window.contentView = NSHostingView(rootView: contentView)
-    }
-
-    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        if !flag {
-            sender.windows.first?.makeKeyAndOrderFront(nil)
-        }
-
-        openSettings()
-
-        return true
+        self.window.contentView = NSHostingView(rootView: contentView)
     }
 }
 
@@ -45,6 +39,20 @@ struct BleedApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
+        MenuBarExtra("Bleed", image: "Icon") {
+            SettingsLink {
+                Label("Settings…", systemImage: "gearshape")
+            }
+            .keyboardShortcut(",", modifiers: [.command])
+
+            Divider()
+
+            Button("Quit") {
+                NSApplication.shared.terminate(nil)
+            }
+            .keyboardShortcut("q", modifiers: [.command])
+        }
+
         Settings {
             SettingsView()
         }
