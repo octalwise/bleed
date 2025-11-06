@@ -22,7 +22,7 @@ using namespace metal;
   if (a <= -0.03) return half4(0.0);
 
   if (pulseOn == 1.0) {
-    float wavet = time * 0.5 * 1.0;
+    float wavet = time * 0.5;
     float wave = sin(wavet + 0.4 * sin(wavet));
     float pulse = wave * 0.3 * pow(strength, 2.0);
 
