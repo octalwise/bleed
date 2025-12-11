@@ -1,4 +1,30 @@
 import SwiftUI
+import ServiceManagement
+import Combine
+
+enum AppEvents {
+    static let openAllowedChanged = PassthroughSubject<Void, Never>()
+}
+
+func promptAllow() {
+    let alert = NSAlert()
+
+    alert.messageText = "Open at Login?"
+    alert.informativeText = "Allow Bleed to start automatically when you log in."
+
+    alert.addButton(withTitle: "Allow")
+    alert.addButton(withTitle: "Later")
+
+    let response = alert.runModal()
+
+    if response == .alertFirstButtonReturn {
+        do {
+            try SMAppService.mainApp.register()
+        } catch {}
+    }
+
+    AppEvents.openAllowedChanged.send()
+}
 
 struct SettingsView: View {
     @AppStorage("testingMode")  var testingMode = false
@@ -12,6 +38,8 @@ struct SettingsView: View {
 
     @AppStorage("effectColor") var colorHex = 0xff0000
     @State var color = Color(red: 1.0, green: 0.0, blue: 0.0)
+
+    @State var openAllowed = SMAppService.mainApp.status == .enabled
 
     var body: some View {
         VStack(spacing: 20) {
@@ -131,8 +159,30 @@ struct SettingsView: View {
                     }
                 }
             }
+
+            HStack {
+                Button("Open at Login", action: promptAllow)
+                    .disabled(self.openAllowed)
+
+                if self.openAllowed {
+                    Image(systemName: "checkmark")
+                }
+
+                Spacer()
+            }
+            .onReceive(NSApplication.shared.publisher(for: \.isActive)) { _ in
+                updateOpenAllowed()
+            }
+            .onReceive(AppEvents.openAllowedChanged) { _ in
+                updateOpenAllowed()
+            }
+            .padding(.top, 5)
         }
         .scenePadding()
         .frame(width: 325)
+    }
+
+    func updateOpenAllowed() {
+        self.openAllowed = SMAppService.mainApp.status == .enabled
     }
 }

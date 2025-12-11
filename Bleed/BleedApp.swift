@@ -1,4 +1,5 @@
 import SwiftUI
+import ServiceManagement
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
@@ -13,6 +14,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if self.launchSettings {
             self.openSettings()
+            promptAllow()
+
             self.launchSettings = false
         }
     }
