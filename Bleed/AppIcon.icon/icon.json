@@ -1,30 +1,22 @@
 {
   "fill" : {
     "linear-gradient" : [
-      "display-p3:0.19320,0.13635,0.13730,1.00000",
-      "display-p3:0.09365,0.06335,0.06385,1.00000"
+      "display-p3:0.20000,0.14000,0.14900,1.00000",
+      "display-p3:0.10000,0.08500,0.08600,1.00000"
     ]
   },
   "groups" : [
     {
       "layers" : [
         {
-          "fill-specializations" : [
-            {
-              "value" : {
-                "automatic-gradient" : "srgb:1.00000,0.00000,0.15686,1.00000"
-              }
-            },
-            {
-              "appearance" : "dark",
-              "value" : {
-                "linear-gradient" : [
-                  "display-p3:1.00000,0.39041,0.43151,1.00000",
-                  "srgb:1.00000,0.00000,0.00685,1.00000"
-                ]
-              }
-            }
-          ],
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:1.00000,0.35967,0.38102,1.00000",
+              "display-p3:1.00000,0.19922,0.21257,1.00000"
+            ]
+          },
+          "glass" : true,
+          "hidden" : false,
           "image-name" : "Icon.png",
           "name" : "Icon"
         }
