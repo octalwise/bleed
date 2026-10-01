@@ -21,7 +21,7 @@ struct OverlayView: View {
     let clock = Date()
 
     var body: some View {
-        TimelineView(.animation) { context in
+        TimelineView(.animation(paused: disable && !testingMode)) { context in
             let displayed = testingMode ? 0.01 : battery.getDisplayed()
             let start = startPercent / 100.0
 
