@@ -29,10 +29,8 @@ func promptAllow() {
 struct SettingsView: View {
     @AppStorage("testingMode")  var testingMode = false
     @AppStorage("chargingHide") var chargingHide = true
-
-    @AppStorage("enableAnim")  var enableAnim = true
-    @AppStorage("enablePulse") var enablePulse = true
-
+    @AppStorage("enableAnim")   var enableAnim = true
+    @AppStorage("enablePulse")  var enablePulse = true
     @AppStorage("startPercent") var startPercent = 10.0
     @AppStorage("strengthMult") var strengthMult = 100.0
 
@@ -52,18 +50,18 @@ struct SettingsView: View {
                 Form {
                     LabeledContent("Conditions:") {
                         VStack(alignment: .leading) {
-                            Toggle("Testing mode", isOn: self.$testingMode)
-                           Toggle("Hide when charging", isOn: self.$chargingHide)
+                            Toggle("Testing mode", isOn: $testingMode)
+                           Toggle("Hide when charging", isOn: $chargingHide)
                         }
                     }
                     .padding(.bottom, 8)
 
                     LabeledContent("Animation:") {
                         VStack(alignment: .leading) {
-                            Toggle("Enable all", isOn: self.$enableAnim)
+                            Toggle("Enable all", isOn: $enableAnim)
 
-                            Toggle("Enable pulsing", isOn: self.$enablePulse)
-                                .disabled(!self.enableAnim)
+                            Toggle("Enable pulsing", isOn: $enablePulse)
+                                .disabled(!enableAnim)
                         }
                     }
                     .padding(.bottom, 8)
@@ -73,7 +71,7 @@ struct SettingsView: View {
                             ColorPicker(
                                 "",
                                 selection: Binding(
-                                    get: { self.color },
+                                    get: { color },
                                     set: { val in
                                         var r: CGFloat = 0
                                         var g: CGFloat = 0
@@ -82,8 +80,8 @@ struct SettingsView: View {
 
                                         NSColor(val).getRed(&r, green: &g, blue: &b, alpha: &a)
 
-                                        self.color = val
-                                        self.colorHex =
+                                        color = val
+                                        colorHex =
                                             (Int(r * 255) << 16) |
                                             (Int(g * 255) << 8) |
                                             (Int(b * 255))
@@ -93,16 +91,16 @@ struct SettingsView: View {
                             )
                             .labelsHidden()
                             .onAppear {
-                                let r = Double((self.colorHex >> 16) & 0xff) / 255
-                                let g = Double((self.colorHex >> 8) & 0xff) / 255
-                                let b = Double(self.colorHex & 0xff) / 255
+                                let r = Double((colorHex >> 16) & 0xff) / 255
+                                let g = Double((colorHex >> 8) & 0xff) / 255
+                                let b = Double(colorHex & 0xff) / 255
 
-                                self.color = Color(red: r, green: g, blue: b)
+                                color = Color(red: r, green: g, blue: b)
                             }
 
                             Button("Reset", action: {
-                                self.colorHex = 0xff0000
-                                self.color = Color(red: 1.0, green: 0.0, blue: 0.0)
+                                colorHex = 0xff0000
+                                color = Color(red: 1.0, green: 0.0, blue: 0.0)
                             })
                         }
                     }
@@ -114,9 +112,9 @@ struct SettingsView: View {
                 Text("Start Percentage:")
                     .font(.headline)
 
-                Slider(value: self.$startPercent, in: 1...25, step: 1)
+                Slider(value: $startPercent, in: 1...25, step: 1)
 
-                Text("\(self.startPercent, specifier: "%.0f")%")
+                Text("\(startPercent, specifier: "%.0f")%")
                     .frame(maxWidth: .infinity, alignment: .center)
             }
 
@@ -126,19 +124,19 @@ struct SettingsView: View {
 
                 Slider(value: Binding(
                     get: {
-                        if self.strengthMult <= 100 {
-                            (self.strengthMult - 25) * (50 / 75)
+                        if strengthMult <= 100 {
+                            (strengthMult - 25) * (50 / 75)
                         } else {
-                            50 + (self.strengthMult - 100) * (50 / 25)
+                            50 + (strengthMult - 100) * (50 / 25)
                         }
                     },
                     set: { val in
                         if abs(val - 50) < 3 {
-                            self.strengthMult = 100
+                            strengthMult = 100
                         } else if val <= 50 {
-                            self.strengthMult = 25 + val * (75 / 50)
+                            strengthMult = 25 + val * (75 / 50)
                         } else {
-                            self.strengthMult = 100 + (val - 50) * (25 / 50)
+                            strengthMult = 100 + (val - 50) * (25 / 50)
                         }
                     }
                 ), in: 0...100)
@@ -162,9 +160,9 @@ struct SettingsView: View {
 
             HStack {
                 Button("Open at Login", action: promptAllow)
-                    .disabled(self.openAllowed)
+                    .disabled(openAllowed)
 
-                if self.openAllowed {
+                if openAllowed {
                     Image(systemName: "checkmark")
                 }
 
@@ -183,6 +181,6 @@ struct SettingsView: View {
     }
 
     func updateOpenAllowed() {
-        self.openAllowed = SMAppService.mainApp.status == .enabled
+        openAllowed = SMAppService.mainApp.status == .enabled
     }
 }

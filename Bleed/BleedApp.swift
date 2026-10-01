@@ -3,56 +3,62 @@ import ServiceManagement
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
-    var status: NSStatusItem!
-
     @AppStorage("launchSettings") var launchSettings = true
-
     @Environment(\.openSettings) var openSettings
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        self.createWindow()
+        UserDefaults.standard.removeObject(forKey: "disable")
+        createWindow()
 
-        if self.launchSettings {
-            self.openSettings()
+        if launchSettings {
+            openSettings()
             promptAllow()
 
-            self.launchSettings = false
+            launchSettings = false
         }
     }
 
     func createWindow() {
         let frame = NSScreen.main!.frame
 
-        self.window = NSWindow(
+        window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: frame.width, height: frame.height),
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
         )
 
-        self.window.isOpaque = false
-        self.window.backgroundColor = .clear
-        self.window.ignoresMouseEvents = true
+        window.isOpaque = false
+        window.backgroundColor = .clear
+        window.ignoresMouseEvents = true
 
-        self.window.level = .statusBar
-        self.window.orderFrontRegardless()
-        self.window.collectionBehavior = [.canJoinAllSpaces]
+        window.level = .statusBar
+        window.orderFrontRegardless()
+        window.collectionBehavior = [.canJoinAllSpaces]
 
         let contentView = OverlayView(
             width: Double(frame.width),
             height: Double(frame.height)
         )
-        self.window.contentView = NSHostingView(rootView: contentView)
+        window.contentView = NSHostingView(rootView: contentView)
     }
 }
 
 @main
 struct BleedApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @Environment(\.openSettings) private var openSettings
+
+    @AppStorage("disable") var disable = false
 
     var body: some Scene {
-        MenuBarExtra("Bleed", image: "Icon") {
-            SettingsLink {
+        MenuBarExtra("Bleed", image: disable ? "Disabled" : "Icon") {
+            Toggle("Pause", isOn: $disable)
+
+            Button {
+                NSApp.activate(ignoringOtherApps: true)
+                openSettings()
+            } label: {
                 Label("Settings…", systemImage: "gearshape")
             }
             .keyboardShortcut(",", modifiers: [.command])
@@ -68,5 +74,6 @@ struct BleedApp: App {
         Settings {
             SettingsView()
         }
+        .windowLevel(.floating)
     }
 }

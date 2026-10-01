@@ -62,9 +62,9 @@ final class BatteryMonitor: ObservableObject {
 
     func getDisplayed() -> Double {
         let secs = 3.0
-        let elapsed = min(-self.lastUpdate.timeIntervalSinceNow, secs) / secs
+        let elapsed = min(-lastUpdate.timeIntervalSinceNow, secs) / secs
 
-        return self.last + self.fade(elapsed) * (self.percentage - self.last)
+        return last + fade(elapsed) * (percentage - last)
     }
 
     func fade(_ x: Double) -> Double {

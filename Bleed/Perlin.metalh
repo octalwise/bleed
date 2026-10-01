@@ -46,8 +46,8 @@ float fade(float x) {
   return x * x * x * (x * (x * 6 - 15) + 10);
 }
 
-float lerp(float a, float b, float x) {
-  return a + fade(x) * (b - a);
+float fmix(float a, float b, float x) {
+  return a + x * (b - a);
 }
 
 float perlin(float3 pos) {
@@ -66,13 +66,19 @@ float perlin(float3 pos) {
   float bbl = corner(f, cx, cy, cz, 0, 1, 1);
   float bbr = corner(f, cx, cy, cz, 1, 1, 1);
 
-  float tt = lerp(ttl, ttr, f.x);
-  float tb = lerp(tbl, tbr, f.x);
-  float bt = lerp(btl, btr, f.x);
-  float bb = lerp(bbl, bbr, f.x);
+  float fx = fade(f.x);
 
-  float t = lerp(tt, tb, f.y);
-  float b = lerp(bt, bb, f.y);
+  float tt = fmix(ttl, ttr, fx);
+  float tb = fmix(tbl, tbr, fx);
+  float bt = fmix(btl, btr, fx);
+  float bb = fmix(bbl, bbr, fx);
 
-  return lerp(t, b, f.z);
+  float fy = fade(f.y);
+
+  float t = fmix(tt, tb, fy);
+  float b = fmix(bt, bb, fy);
+
+  float fz = fade(f.z);
+
+  return fmix(t, b, fz);
 }

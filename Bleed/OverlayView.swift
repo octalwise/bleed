@@ -7,6 +7,7 @@ struct OverlayView: View {
 
     @StateObject var battery = BatteryMonitor()
 
+    @AppStorage("disable")      var disable = false
     @AppStorage("testingMode")  var testingMode = false
     @AppStorage("chargingHide") var chargingHide = true
     @AppStorage("enableAnim")   var enableAnim = true
@@ -24,21 +25,21 @@ struct OverlayView: View {
             let displayed = testingMode ? 0.01 : battery.getDisplayed()
             let start = startPercent / 100.0
 
-            if displayed <= start {
+            if (!disable || testingMode) && displayed <= start {
                 let strength = 1.0 - ((displayed - 0.01) / start)
 
-                let r = Double((self.colorHex >> 16) & 0xff) / 255.0
-                let g = Double((self.colorHex >> 8) & 0xff) / 255.0
-                let b = Double(self.colorHex & 0xff) / 255.0
+                let r = Double((colorHex >> 16) & 0xff) / 255.0
+                let g = Double((colorHex >> 8) & 0xff) / 255.0
+                let b = Double(colorHex & 0xff) / 255.0
 
                 let color = Color(red: r, green: g, blue: b)
 
                 Rectangle()
                     .colorEffect(ShaderLibrary.frag(
-                        .float2(self.width, self.height),
-                        .float(enableAnim && !reduceMotion ? self.clock.timeIntervalSinceNow : 0.0),
-                        .float(strength * self.strengthMult / 100.0),
-                        .float(self.enablePulse ? 1.0 : 0.0),
+                        .float2(width, height),
+                        .float(enableAnim && !reduceMotion ? clock.timeIntervalSinceNow : 0.0),
+                        .float(strength * strengthMult / 100.0),
+                        .float(enablePulse ? 1.0 : 0.0),
                         .color(color)
                     ))
             } else {
